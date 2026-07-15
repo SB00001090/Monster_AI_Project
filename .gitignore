@@ -1,3 +1,6 @@
+# ─── Monster_AI_Project / Guardian Ai ───
+# Keep secrets & runtime out of GitHub Desktop commits.
+
 # Python
 __pycache__/
 *.py[cod]
@@ -12,6 +15,17 @@ build/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+*.egg
+.eggs/
+pip-wheel-metadata/
+
+# Local junk / OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp
+*.bak
+~$*
 
 # Node / Web UI
 node_modules/
@@ -59,7 +73,17 @@ data/logs/
 data/models/
 data/guard/
 data/guardian/
+data/guardian_security/
+data/monsterguard/
+data/monster_guard/
+data/monster_guard/**
+!data/monster_guard/**/.gitkeep
 data/ecosystem/
+# Runtime threat logs / blocked lists copies
+**/reports/threat_log.json
+**/reports/threat_log.jsonl
+guardian_ai/monster_guard/database/blocked_list.json
+!guardian_ai/monster_guard/database/blocked_list.json.example
 data/learning/
 data/mini/
 data/callguard/tunnel_url.txt

@@ -13,6 +13,9 @@ async def firewall_status(request: Request) -> dict:
     ml = request.app.state.monsterlock
     cg = getattr(request.app.state, "crimeguard", None)
     guardian = getattr(request.app.state, "guardian", None)
+    monsterguard = getattr(request.app.state, "monsterguard", None) or getattr(
+        request.app.state, "guardian_security", None
+    )
     probe = getattr(request.app.state, "hardware_probe", None)
     return {
         "firewall": fw.to_dict(),
@@ -20,6 +23,8 @@ async def firewall_status(request: Request) -> dict:
         "monsterlock": ml.to_dict(),
         "crimeguard": cg.to_dict() if cg else {"enabled": False},
         "guardian": await guardian.health() if guardian else {"enabled": False},
+        "monsterguard": monsterguard.status() if monsterguard else {"enabled": False},
+        "guardian_security": monsterguard.status() if monsterguard else {"enabled": False},
         "hardware": probe.to_dict() if probe else {},
         "bans": fw.blocker.list_bans(),
     }

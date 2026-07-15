@@ -1,4 +1,4 @@
-# Guardian Ai
+# Guardian Ai · Monster AI Project
 
 **Developed by Suckbob | Guardian Ai**
 
@@ -6,28 +6,58 @@
 
 > **Call Guard 已完全移除。** 遠端連線僅支援 **Cloudflare Tunnel HTTPS** 或 **USB `adb reverse`** — 無 Tailscale、無 QR Code、無需輸入 LAN IP。
 
-詳見 [`deploy/guardian/ARCHITECTURE.md`](deploy/guardian/ARCHITECTURE.md) · [`MASTER_SPEC_20260901.md`](deploy/guardian/MASTER_SPEC_20260901.md)
+詳見 [`deploy/guardian/ARCHITECTURE.md`](deploy/guardian/ARCHITECTURE.md) · [`MASTER_SPEC_20260901.md`](deploy/guardian/MASTER_SPEC_20260901.md) · **[專案目錄對照](docs/PROJECT_LAYOUT.md)**
 
-## 繁體中文 Repo（建議 clone）
+## 專案結構（概念 ↔ 實際）
 
-**GitHub CLI（需先安裝 [gh](https://cli.github.com/) 並登入）：**
+概念上的 **Monster_AI_Project** = 本倉庫 Git 根目錄。
 
-```bash
-gh repo clone SB00001090/Guardian-Ai-ZH-TW
-cd Guardian-Ai-ZH-TW
-run.bat
+```
+.                                    ← Git root (Monster_AI_Project)
+├── start_monster_ai.py              ← 啟動 Monster AI
+├── start_monster_guard.py           ← 啟動 MonsterGuard 24/7
+├── main.py / run.bat                ← 既有一鍵入口
+├── monster_ai/                      ← 主項目（概念名 monster_ai_file）
+├── guardian_ai/
+│   └── monster_guard/               ← 24/7 守護（概念名 guardian_ai_file/monster_guard）
+├── monsterguard/                    ← HTTP 掃描 API 引擎
+├── shared/ · docs/ · client/ · server/
+└── .gitignore
 ```
 
-**或使用 git：**
+| 啟動 | 指令 |
+|------|------|
+| **選單（最省事）** | 雙擊 **`start.bat`** |
+| Monster AI（生成 + API :7860） | `python start_monster_ai.py` 或 `run.bat` |
+| MonsterGuard 24/7 | `python start_monster_guard.py` |
+| 整理總覽 / 健康檢查 | `python scripts/project_status.py` |
+
+完整對照：[docs/PROJECT_LAYOUT.md](docs/PROJECT_LAYOUT.md) · 日常：[docs/日常操作.md](docs/日常操作.md)
+
+## 獨立 Repo（Monster AI Project）
+
+**建議 clone（Monster AI 獨立主庫）：**
 
 ```bash
-git clone https://github.com/SB00001090/Guardian-Ai-ZH-TW.git
-cd Guardian-Ai-ZH-TW
-run.bat
+git clone https://github.com/SB00001090/Monster_AI_Project.git
+cd Monster_AI_Project
+start.bat
+# 或
+python start_monster_ai.py
 ```
 
-- 英文主 Repo：[SB00001090/Guardian-Ai](https://github.com/SB00001090/Guardian-Ai) — `gh repo clone SB00001090/Guardian-Ai`
-- 本 Repo 根目錄 README 為繁體中文，程式碼與 Guardian-Ai `main` 同步
+| Repo | 用途 |
+|------|------|
+| [SB00001090/Monster_AI_Project](https://github.com/SB00001090/Monster_AI_Project) | **Monster AI 獨立專案**（本庫） |
+| [SB00001090/Guardian-Ai](https://github.com/SB00001090/Guardian-Ai) | Guardian Ai 英文主線 |
+| [SB00001090/Guardian-Ai-ZH-TW](https://github.com/SB00001090/Guardian-Ai-ZH-TW) | 繁中同步庫 |
+
+```bash
+# 其他入口
+python start_monster_guard.py    # MonsterGuard 24/7
+python scripts/project_status.py # 整理總覽
+run.bat                          # 完整一鍵（含 ComfyUI 流）
+```
 
 - 自我修復，自動 LLM 備援
 - Web UI（HTTP + WebSocket）

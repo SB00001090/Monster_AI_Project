@@ -474,6 +474,24 @@ class GuardianNetworkLearningSettings(BaseModel):
     daemon_min_hours_between_runs: float = 0.25
 
 
+class MonsterGuardSettings(BaseModel):
+    """MonsterGuard — antivirus-style + Discord scam protection (not Platform)."""
+
+    enabled: bool = True
+    security_level: str = "medium"  # low | medium | high
+    real_time: bool = True
+    block_downloads: bool = True
+    use_llm_classifier: bool = False
+    signatures_path: str = "monsterguard/database/threat_signatures.json"
+    discord_patterns_path: str = "monsterguard/database/discord_scam_patterns.json"
+    cache_dir: str = "./data/monsterguard"
+    reputation_ttl_hours: float = 24.0
+
+
+# Backward-compatible alias name used in older configs
+GuardianSecuritySettings = MonsterGuardSettings
+
+
 class GuardianSettings(BaseModel):
     """Guardian Ai — cloud sync, OC protection, toddler learning, error learning."""
 
@@ -526,6 +544,9 @@ class Settings(BaseModel):
     integrations: IntegrationsSettings = Field(default_factory=IntegrationsSettings)
     commercial: CommercialSettings = Field(default_factory=CommercialSettings)
     guardian: GuardianSettings = Field(default_factory=GuardianSettings)
+    monsterguard: MonsterGuardSettings = Field(default_factory=MonsterGuardSettings)
+    # Legacy config key still accepted via model alias population if present in YAML
+    guardian_security: MonsterGuardSettings | None = None
     guard: GuardSettings | None = None
 
     @property
@@ -590,4 +611,12 @@ def load_settings(config_path: str | Path | None = None) -> Settings:
 
     data = _apply_gpu_profile(data)
     data = _apply_env_overrides(data)
+    # Migrate legacy guardian_security: block into monsterguard:
+    if "guardian_security" in data and "monsterguard" not in data:
+        data["monsterguard"] = data.pop("guardian_security")
+    elif "guardian_security" in data and "monsterguard" in data:
+        merged = dict(data.get("guardian_security") or {})
+        merged.update(data.get("monsterguard") or {})
+        data["monsterguard"] = merged
+        data.pop("guardian_security", None)
     return Settings.model_validate(data)

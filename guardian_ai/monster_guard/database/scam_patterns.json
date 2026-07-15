@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "description": "MonsterGuard Discord scam patterns — free Nitro, fake verification, wallet drain, hacked DM",
+  "scam_types": {
+    "nitro": {
+      "weight": 35,
+      "phrases_en": [
+        "free nitro",
+        "claim nitro",
+        "nitro gift",
+        "steam nitro",
+        "discord.gift",
+        "click to redeem nitro",
+        "you've been gifted nitro"
+      ],
+      "phrases_zh": [
+        "免費 nitro",
+        "領取 nitro",
+        "nitro 禮物",
+        "點此領取 nitro",
+        "免費領取 discord nitro"
+      ]
+    },
+    "verification": {
+      "weight": 30,
+      "phrases_en": [
+        "verify your server",
+        "verify to continue",
+        "complete verification",
+        "captcha verify",
+        "authorize bot to verify",
+        "click verify below"
+      ],
+      "phrases_zh": [
+        "驗證伺服器",
+        "完成驗證",
+        "點擊下方驗證",
+        "授權機器人驗證",
+        "立即驗證帳戶"
+      ]
+    },
+    "crypto": {
+      "weight": 40,
+      "phrases_en": [
+        "double your crypto",
+        "airdrop claim",
+        "connect wallet",
+        "seed phrase",
+        "private key",
+        "metamask verify",
+        "wallet drain"
+      ],
+      "phrases_zh": [
+        "加密貨幣翻倍",
+        "空投領取",
+        "連接錢包",
+        "助記詞",
+        "私鑰",
+        "錢包驗證"
+      ]
+    },
+    "hacked_dm": {
+      "weight": 25,
+      "phrases_en": [
+        "i saw a funny video of you",
+        "is this you in the video",
+        "check this screenshot of you",
+        "bro is this your account",
+        "someone is posting about you"
+      ],
+      "phrases_zh": [
+        "這是你的影片嗎",
+        "有人在傳你的截圖",
+        "這帳號是你嗎",
+        "快看這個關於你的"
+      ]
+    },
+    "malware": {
+      "weight": 40,
+      "phrases_en": [
+        "download this to fix discord",
+        "install this client update",
+        "run this .exe to claim",
+        "token logger free",
+        "betterdiscord cracked"
+      ],
+      "phrases_zh": [
+        "下載此檔修復 discord",
+        "安裝更新客戶端",
+        "執行 exe 領獎"
+      ]
+    }
+  },
+  "suspicious_domains": [
+    "discordgift",
+    "discord-nitro",
+    "free-nitro",
+    "nitro-gift",
+    "steamcommunity",
+    "dlscord",
+    "discrod",
+    "discorcl",
+    "discordapp.gift"
+  ],
+  "safe_discord_hosts": [
+    "discord.com",
+    "discord.gg",
+    "discordapp.com",
+    "cdn.discordapp.com",
+    "media.discordapp.net",
+    "discord.media"
+  ]
+}

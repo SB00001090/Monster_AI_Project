@@ -313,6 +313,19 @@ commercial:
   unlock_dev_token: ""
   min_high_quality_score: 0.85
 
+# MonsterGuard (antivirus-style + Discord scam) — distinct from guardian platform
+monsterguard:
+  enabled: true
+  security_level: medium  # low | medium | high
+  real_time: true
+  block_downloads: true
+  use_llm_classifier: false
+  signatures_path: "monsterguard/database/threat_signatures.json"
+  discord_patterns_path: "monsterguard/database/discord_scam_patterns.json"
+  cache_dir: "./data/monsterguard"
+  reputation_ttl_hours: 24
+
+# Guardian Platform — E2E sync, toddler learning, OC fingerprint, training vault
 guardian:
   enabled: true
   data_dir: "./data/guardian"

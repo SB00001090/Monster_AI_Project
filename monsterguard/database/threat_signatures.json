@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "description": "MonsterGuard local threat seed — non-NSFW only (phishing/malware/scam)",
+  "allowlist_hosts": [
+    "github.com",
+    "githubusercontent.com",
+    "discord.com",
+    "discord.gg",
+    "discordapp.com",
+    "cdn.discordapp.com",
+    "google.com",
+    "googleapis.com",
+    "cloudflare.com",
+    "trycloudflare.com",
+    "ollama.com",
+    "python.org",
+    "pypi.org",
+    "npmjs.com",
+    "microsoft.com",
+    "windows.com",
+    "x.ai",
+    "grok.com"
+  ],
+  "blacklist_hosts": [
+    "discord-nitro-free.xyz",
+    "free-nitro.xyz",
+    "steamcommunity.ru",
+    "dlscord.com",
+    "discordgift.site"
+  ],
+  "suspicious_tlds": [
+    ".xyz",
+    ".top",
+    ".click",
+    ".gq",
+    ".tk",
+    ".ml",
+    ".cf",
+    ".ga",
+    ".buzz",
+    ".icu",
+    ".zip",
+    ".mov"
+  ],
+  "lookalike_patterns": [
+    "disc[o0]rd",
+    "dlscord",
+    "discord[\\s.-]?gift",
+    "discord[\\s.-]?nitro",
+    "steamcommuni",
+    "faceb00k",
+    "paypa1",
+    "micr0soft"
+  ],
+  "dangerous_extensions": [
+    ".exe",
+    ".scr",
+    ".bat",
+    ".cmd",
+    ".ps1",
+    ".vbs",
+    ".js",
+    ".jse",
+    ".wsf",
+    ".msi",
+    ".dll",
+    ".com",
+    ".pif",
+    ".hta",
+    ".apk",
+    ".jar"
+  ],
+  "phishing_phrases_en": [
+    "verify your account immediately",
+    "click here to claim nitro",
+    "unusual login attempt",
+    "confirm your password",
+    "wallet seed phrase",
+    "private key required",
+    "you have won free",
+    "suspended account restore"
+  ],
+  "phishing_phrases_zh": [
+    "立即驗證您的帳戶",
+    "點此領取 nitro",
+    "異常登入請確認",
+    "輸入您的密碼以繼續",
+    "提供助記詞",
+    "私鑰驗證",
+    "帳戶即將停用",
+    "免費領取禮品卡"
+  ]
+}

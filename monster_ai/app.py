@@ -75,10 +75,12 @@ from monster_ai.api.integrations import router as integrations_router
 from monster_ai.api.commercial import router as commercial_router
 from monster_ai.api.mini import router as mini_router
 from monster_ai.api.guardian import router as guardian_router
+from monster_ai.api.guardian_security import router as guardian_security_router
 from monster_ai.modules.dify.bridge import DifyBridge
 from monster_ai.modules.guardian import GuardianService
 from monster_ai.modules.ecosystem.installer import EcosystemInstaller
 from monster_ai.modules.mini.service import MiniMonsterService
+from monsterguard.service import MonsterGuardService
 
 logger = logging.getLogger(__name__)
 
@@ -152,6 +154,10 @@ def _ensure_data_dirs() -> None:
         "guardian/training_vault/lora",
         "guardian/network_learning",
         "guardian/toddler",
+        "guardian_security",
+        "guardian_security/quarantine",
+        "monsterguard",
+        "monsterguard/quarantine",
     ):
         (Path("./data") / sub).mkdir(parents=True, exist_ok=True)
 
@@ -197,6 +203,12 @@ async def lifespan(app: FastAPI):
     await repair.start()
     await watchdog.start()
     await self_heal.start()
+
+    mg = getattr(app.state, "monsterguard", None) or getattr(
+        app.state, "guardian_security", None
+    )
+    if mg is not None:
+        await mg.start()
 
     discord_svc = getattr(app.state, "discord", None)
     if discord_svc is not None:
@@ -272,6 +284,11 @@ async def lifespan(app: FastAPI):
 
     if discord_svc is not None:
         await discord_svc.stop_guard()
+    mg = getattr(app.state, "monsterguard", None) or getattr(
+        app.state, "guardian_security", None
+    )
+    if mg is not None:
+        await mg.stop()
     await self_heal.stop()
     await watchdog.stop()
     await repair.stop()
@@ -344,6 +361,27 @@ def create_app(settings: Settings) -> FastAPI:
         learning=None,
         repo_root=root,
         hardware_fingerprint=monsterlock.state.fingerprint,
+    )
+
+    async def _mg_chat(prompt: str, system: str) -> str:
+        return await repair.chat(prompt, system=system, temperature=0.2)
+
+    from monster_ai.config import MonsterGuardSettings
+
+    mg_settings = settings.monsterguard or settings.guardian_security or MonsterGuardSettings()
+    monsterguard_svc = MonsterGuardService(
+        enabled=mg_settings.enabled,
+        security_level=mg_settings.security_level,
+        real_time=mg_settings.real_time,
+        block_downloads=mg_settings.block_downloads,
+        use_llm_classifier=mg_settings.use_llm_classifier,
+        signatures_path=str(root / mg_settings.signatures_path)
+        if not Path(mg_settings.signatures_path).is_absolute()
+        else mg_settings.signatures_path,
+        cache_dir=mg_settings.cache_dir,
+        reputation_ttl_hours=mg_settings.reputation_ttl_hours,
+        protection_quarantine=getattr(firewall, "quarantine", None),
+        chat_fn=_mg_chat if mg_settings.use_llm_classifier else None,
     )
     quality_store = QualityStore(
         settings.modules.image.quality.data_dir,
@@ -502,6 +540,8 @@ def create_app(settings: Settings) -> FastAPI:
     app.state.discord = discord_svc
     app.state.mini = mini_svc
     app.state.guardian = guardian_svc
+    app.state.monsterguard = monsterguard_svc
+    app.state.guardian_security = monsterguard_svc  # legacy alias
     app.state.ecosystem = ecosystem
     app.state.dify = DifyBridge(settings.dify)
     app.state.rate_limiter = RateLimiter(settings.protection.rate_limit_per_minute)
@@ -520,6 +560,7 @@ def create_app(settings: Settings) -> FastAPI:
     app.include_router(integrations_router)
     app.include_router(commercial_router)
     app.include_router(guardian_router)
+    app.include_router(guardian_security_router)
     app.include_router(roleplay_router)
     app.include_router(ws_router)
     app.include_router(node_proxy_router)

@@ -120,6 +120,16 @@ App Error → Sentry (optional) + tRPC errors.reportClientError
 - **已移除** Tailscale · QR Code · LAN IP 輸入
 - USB `adb reverse` + `install-apk-adb.bat` 直裝 APK
 
+## 6.1 MonsterGuard（防毒風格 · Discord 詐騙 · 與平台分離）
+
+| 產品 | 路徑 | API / 入口 |
+|------|------|------------|
+| Guardian **平台** | `monster_ai/modules/guardian/` | `/api/guardian/*` |
+| MonsterGuard **掃描引擎** | `monsterguard/` | `/api/monsterguard/*` |
+| MonsterGuard **24/7 核心** | `guardian_ai/monster_guard/` | `python run_monster_guard.py` |
+
+詳見 [`SECURITY_MODULE.md`](SECURITY_MODULE.md)。不審查本地 RP。
+
 ## API 速查
 
 | Method | Path | 用途 |

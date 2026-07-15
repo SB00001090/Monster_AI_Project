@@ -1,0 +1,25 @@
+{
+  "product": "MonsterGuard",
+  "version": 1,
+  "enabled": true,
+  "security_level": "medium",
+  "always_on": true,
+  "monitor_interval_seconds": 15,
+  "block_threshold": 70,
+  "warn_threshold": 50,
+  "auto_block": true,
+  "auto_restart": true,
+  "max_restarts_per_hour": 6,
+  "restart_backoff_seconds": 5,
+  "paths": {
+    "scam_patterns": "guardian_ai/monster_guard/database/scam_patterns.json",
+    "blocked_list": "guardian_ai/monster_guard/database/blocked_list.json",
+    "threat_log": "data/monster_guard/reports/threat_log.json",
+    "runtime_dir": "data/monster_guard"
+  },
+  "discord": {
+    "enabled": true,
+    "scan_attachments": true
+  },
+  "notes": "Local-first 24/7 MonsterGuard service. Not content moderation / NSFW filtering."
+}
