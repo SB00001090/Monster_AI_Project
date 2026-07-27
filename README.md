@@ -1,6 +1,12 @@
 # Guardian Ai · Monster AI Project
 
-**Developed by Suckbob | Guardian Ai**
+**Developed by Suckbob | Guardian Ai · Publisher: Monster_Ai_hk**
+
+> **【重要公告 2026-07-28】**  
+> **Web 版正式宣佈延期。** 目前優先開發並推出 **Monster AI APK 訪客免費公測版**。  
+> APK 下載連結稍後提供（簽名版 · Monster_Ai_hk）。  
+> 訪客模式完全免費，無需登入即可體驗核心 RP + 圖像功能（有每日額度限制）。  
+> 感謝支持，請持續關注本 repo 更新。
 
 **本地優先、隱私保護** 的 AI 平台 — 幼兒教育式漸進學習、多模態生成（RP + 圖片 + 影片 + 音訊）、OC 反抄襲、加密訓練庫、E2E 雲端同步，全部在你的電腦上執行。
 
@@ -60,7 +66,7 @@ run.bat                          # 完整一鍵（含 ComfyUI 流）
 ```
 
 - 自我修復，自動 LLM 備援
-- Web UI（HTTP + WebSocket）
+- Web UI（HTTP + WebSocket）— **目前延期，優先 APK 公測**
 - 模組化架構 — 依需求啟用功能
 - 針對 NVIDIA GPU 最佳化（RTX 4060 / 4090）
 - MIT 授權
@@ -69,7 +75,7 @@ run.bat                          # 完整一鍵（含 ComfyUI 流）
 
 | 功能 | 狀態 |
 |------|------|
-| 聊天 + WebSocket UI | 可用 |
+| 聊天 + WebSocket UI | 可用（Web 版延期） |
 | SillyTavern 風格角色扮演（卡片、記憶、多會話） | 可用 |
 | 自我修復 LLM + 生成重試 | 可用 |
 | 圖像生成（ComfyUI + LoRA + LLM 提示詞） | 可用 |
@@ -101,6 +107,7 @@ run.bat                          # 完整一鍵（含 ComfyUI 流）
 | 自我修復 watchdog + 安全 git 快照（略過 secrets） | 可用 |
 | Manuscript / Diary Discord 分享（PR-C/D/E） | 可用 |
 | **Guardian Ai Android**（`apps/guardian-ai-android`） | 可用 |
+| **Monster AI APK 訪客免費公測版**（開發中，連結稍後提供） | 優先開發中 |
 | 硬編碼免責聲明（含幼兒教育式學習提醒） | 可用 |
 
 ## Guardian Ai — 核心 API
@@ -229,7 +236,7 @@ monster-ai-webui
 
 分頁：**聊天** · **角色扮演**（匯入角色卡、多會話） · **生成**（圖像 / 影片 / TTS）
 
-### React Web UI（進階）
+### React Web UI（進階）— 目前延期
 
 完整 React 介面位於專案根目錄（`client/`、`server/`、`package.json`）。詳見 [WEB_UI_README.md](WEB_UI_README.md)。
 
@@ -616,10 +623,12 @@ pytest
 
 ## 路線圖
 
-1. 原生 AnimateDiff ComfyUI 工作流程（單次通過影片）
-2. ~~Discord 機器人橋接~~（MonsterGuard 已推出）
-3. LoRA 訓練啟動器（unsloth）
-4. 第三方模組外掛 API
+1. **Monster AI APK 訪客免費公測版**（優先，下載連結稍後提供）
+2. 原生 AnimateDiff ComfyUI 工作流程（單次通過影片）
+3. ~~Discord 機器人橋接~~（MonsterGuard 已推出）
+4. LoRA 訓練啟動器（unsloth）
+5. 第三方模組外掛 API
+6. Web 版重啟（待 APK 公測穩定後）
 
 ## 授權
 
