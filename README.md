@@ -2,8 +2,6 @@
 
 **Developed by Suckbob | Guardian Ai · Publisher: Monster_Ai_hk**
 
-> **感謝 xAI GROK 協助開發（開發者自行付費）**
-
 > **【重要公告 2026-07-28】**  
 > **Web 版正式宣佈延期。** 目前優先開發並推出 **Monster AI APK 訪客免費公測版**。  
 > APK 下載連結稍後提供（簽名版 · Monster_Ai_hk）。  
