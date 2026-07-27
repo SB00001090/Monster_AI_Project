@@ -4,8 +4,11 @@
 
 > **【重要公告 2026-07-28】**  
 > **Web 版正式宣佈延期。** 目前優先開發並推出 **Monster AI APK 訪客免費公測版**。  
-> APK 下載連結稍後提供（簽名版 · Monster_Ai_hk）。  
-> 訪客模式完全免費，無需登入即可體驗核心 RP + 圖像功能（有每日額度限制）。  
+>  
+> **APK 下載頁面：** [https://github.com/SB00001090/Monster_AI_Project/releases/tag/v1.0.0-beta](https://github.com/SB00001090/Monster_AI_Project/releases/tag/v1.0.0-beta)  
+> （簽名版 · Monster_Ai_hk · 目前 APK 檔案建置中，稍後上傳）  
+>  
+> 訪客模式完全免費，無限額使用，無審查 RP 體驗。  
 > 感謝支持，請持續關注本 repo 更新。
 
 **本地優先、隱私保護** 的 AI 平台 — 幼兒教育式漸進學習、多模態生成（RP + 圖片 + 影片 + 音訊）、OC 反抄襲、加密訓練庫、E2E 雲端同步，全部在你的電腦上執行。
@@ -107,7 +110,7 @@ run.bat                          # 完整一鍵（含 ComfyUI 流）
 | 自我修復 watchdog + 安全 git 快照（略過 secrets） | 可用 |
 | Manuscript / Diary Discord 分享（PR-C/D/E） | 可用 |
 | **Guardian Ai Android**（`apps/guardian-ai-android`） | 可用 |
-| **Monster AI APK 訪客免費公測版**（開發中，連結稍後提供） | 優先開發中 |
+| **Monster AI APK 訪客免費公測版** | [下載頁面](https://github.com/SB00001090/Monster_AI_Project/releases/tag/v1.0.0-beta) |
 | 硬編碼免責聲明（含幼兒教育式學習提醒） | 可用 |
 
 ## Guardian Ai — 核心 API
@@ -622,7 +625,7 @@ pytest
 
 ## 路線圖
 
-1. **Monster AI APK 訪客免費公測版**（優先，下載連結稍後提供）
+1. **Monster AI APK 訪客免費公測版** → [v1.0.0-beta](https://github.com/SB00001090/Monster_AI_Project/releases/tag/v1.0.0-beta)
 2. 原生 AnimateDiff ComfyUI 工作流程（單次通過影片）
 3. ~~Discord 機器人橋接~~（MonsterGuard 已推出）
 4. LoRA 訓練啟動器（unsloth）
