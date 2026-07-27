@@ -212,15 +212,26 @@ class VideoModuleSettings(ModuleToggle):
     comfyui_url: str = "http://127.0.0.1:8188"
     output_dir: str = "./data/outputs/videos"
     training_materials_dir: str = "C:/MonsterAI/Training generative video"
-    mode: str = "animatediff"
-    max_frames: int = 16
-    fps: int = 8
-    width: int = 512
-    height: int = 512
-    steps: int = 15
+    # animatediff | sulphur2 | wan22_5b | wan22_remix | wan22_14b | hunyuan15 | auto
+    mode: str = "auto"
+    default_backend: str = "auto"
+    prefer_uncensored: bool = True
+    vram_gb: int = 12
+    max_frames: int = 81
+    fps: int = 16
+    width: int = 832
+    height: int = 480
+    steps: int = 20
+    cfg: float = 5.0
     output_format: str = "mp4"
     require_ffmpeg: bool = True
     temp_dir: str = "./data/tmp"
+    comfy_input_dir: str = ""  # empty = auto-detect under ComfyUI/input
+    max_wait_seconds: int = 900
+    auto_motion_prompt: bool = True
+    auto_character_lora: bool = True
+    default_nsfw_lora: str = ""
+    default_nsfw_lora_strength: float = 0.75
 
 
 class GuardSettings(BaseModel):
@@ -526,10 +537,82 @@ class GuardianSettings(BaseModel):
     )
 
 
+class SelfLearningAnalysisSettings(BaseModel):
+    """情緒自學分析 — 台灣 + 香港口語。"""
+
+    enabled: bool = True
+    log_emotion_tag: bool = True
+    influence_response: bool = True
+    save_to_training: bool = True
+    data_dir: str = "./data/learning"
+
+
+class SelfHealingConvSettings(BaseModel):
+    """對話級自癒（逾時重試 / fallback）。"""
+
+    enabled: bool = True
+    conversation_timeout_sec: float = 45.0
+    max_retries: int = 3
+    auto_fallback_llm: bool = True
+    watchdog_enabled: bool = True
+    preserve_session_on_restart: bool = True
+    log_dir: str = "./data/logs"
+
+
+class FeedbackSettings(BaseModel):
+    enabled: bool = True
+    webhook_url: str = ""
+
+
+class AutoUpdateSettings(BaseModel):
+    enabled: bool = True
+    check_on_startup: bool = True
+    repo: str = "SB00001090/Monster_AI_Project"
+
+
+class UiThemesSettings(BaseModel):
+    enabled: bool = True
+    current: str = "cyber_pcb"
+    allow_custom_rgb: bool = True
+    hidden_unlocked: bool = False
+    available: list[str] = Field(
+        default_factory=lambda: [
+            "cyber_pcb",
+            "gothic",
+            "japanese",
+            "hk_neon",
+            "minimal_dark",
+            "minimal_light",
+            "neon_cyber",
+            "blood_gothic",
+            "modern_japanese",
+            "cha_chaan_teng",
+        ]
+    )
+    hidden: list[str] = Field(default_factory=lambda: ["blue_rose_cage"])
+
+
+class GesturesSettings(BaseModel):
+    enabled: bool = True
+    sensitivity: str = "medium"  # low | medium | high
+    left_handed: bool = False
+
+
 class Settings(BaseModel):
     host: str = "127.0.0.1"
     port: int = 7860
     log_level: str = "info"
+    # 加速開發包：無限額 + 無審查（仍保留未成年/真實犯罪硬規則於其他層）
+    unlimited_mode: bool = True
+    uncensored: bool = True
+    self_learning_analysis: SelfLearningAnalysisSettings = Field(
+        default_factory=SelfLearningAnalysisSettings
+    )
+    self_healing: SelfHealingConvSettings = Field(default_factory=SelfHealingConvSettings)
+    feedback: FeedbackSettings = Field(default_factory=FeedbackSettings)
+    auto_update: AutoUpdateSettings = Field(default_factory=AutoUpdateSettings)
+    ui_themes: UiThemesSettings = Field(default_factory=UiThemesSettings)
+    gestures: GesturesSettings = Field(default_factory=GesturesSettings)
     repair: RepairSettings = Field(default_factory=RepairSettings)
     learning: LearningSettings = Field(default_factory=LearningSettings)
     llm: LLMSettings = Field(default_factory=LLMSettings)

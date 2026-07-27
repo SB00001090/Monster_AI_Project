@@ -1,0 +1,207 @@
+{
+  "54": {
+    "class_type": "ModelSamplingSD3",
+    "inputs": {
+      "model": [
+        "37",
+        0
+      ],
+      "_widgets": [
+        8.000000000000002
+      ]
+    }
+  },
+  "58": {
+    "class_type": "KSamplerAdvanced",
+    "inputs": {
+      "model": [
+        "55",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "57",
+        0
+      ],
+      "_widgets": [
+        "disable",
+        0,
+        "fixed",
+        20,
+        3.5,
+        "euler",
+        "simple",
+        10,
+        10000,
+        "disable"
+      ]
+    }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "_widgets": [
+        "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "wan",
+        "default"
+      ]
+    }
+  },
+  "39": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "_widgets": [
+        "wan_2.1_vae.safetensors"
+      ]
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "58",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    }
+  },
+  "28": {
+    "class_type": "SaveAnimatedWEBP",
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "_widgets": [
+        "ComfyUI",
+        16,
+        false,
+        80,
+        "default"
+      ]
+    }
+  },
+  "47": {
+    "class_type": "SaveWEBM",
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "_widgets": [
+        "ComfyUI",
+        "vp9",
+        16.000000000000004,
+        13.3333740234375
+      ]
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "38",
+        0
+      ],
+      "_widgets": [
+        "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走"
+      ]
+    }
+  },
+  "56": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "_widgets": [
+        "wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors",
+        "default"
+      ]
+    }
+  },
+  "55": {
+    "class_type": "ModelSamplingSD3",
+    "inputs": {
+      "model": [
+        "56",
+        0
+      ],
+      "_widgets": [
+        8
+      ]
+    }
+  },
+  "37": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "_widgets": [
+        "wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors",
+        "default"
+      ]
+    }
+  },
+  "57": {
+    "class_type": "KSamplerAdvanced",
+    "inputs": {
+      "model": [
+        "54",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "61",
+        0
+      ],
+      "_widgets": [
+        "enable",
+        738226772790037,
+        "randomize",
+        20,
+        3.5,
+        "euler",
+        "simple",
+        0,
+        10,
+        "enable"
+      ]
+    }
+  },
+  "61": {
+    "class_type": "EmptyHunyuanLatentVideo",
+    "inputs": {
+      "_widgets": [
+        1280,
+        704,
+        57,
+        1
+      ]
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "38",
+        0
+      ],
+      "_widgets": [
+        "a robot is running through a futuristic cyberpunk city with neon signs and darkness with bright HDR lights"
+      ]
+    }
+  }
+}

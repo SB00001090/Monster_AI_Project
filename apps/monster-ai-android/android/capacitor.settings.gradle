@@ -1,0 +1,6 @@
+// 由 `npx cap sync android` 更新；此為公測預留骨架
+// 開發者：suckbob | 發行商：Monster_Ai_hk
+// 若已在 monorepo 根執行 cap add/sync，請改用根目錄 android/ 或把 node_modules 路徑對齊
+
+// include ':capacitor-android'
+// project(':capacitor-android').projectDir = new File('../../../node_modules/@capacitor/android/capacitor')

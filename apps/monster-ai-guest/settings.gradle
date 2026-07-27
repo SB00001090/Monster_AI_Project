@@ -1,0 +1,19 @@
+// Monster AI 訪客試玩版
+// 開發者：Suckbob | 發行商：Monster_Ai_hk
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "MonsterAiGuest"
+include(":app")

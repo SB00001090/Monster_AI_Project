@@ -42,7 +42,7 @@ export default function MobileImagePage({
   onSwitchToChat,
 }: MobileImagePageProps) {
   const { user, loading: authLoading } = useAuth();
-  const { isGuest } = useGuest();
+  const { isGuest, consumeImage, canImage, quota } = useGuest();
   const canUse = Boolean(user) || isGuest;
   const [currentConversationId, setCurrentConversationId] = useState<
     number | null
@@ -121,6 +121,18 @@ export default function MobileImagePage({
 
   const handleGenerateImage = async () => {
     if (!prompt.trim() || !currentConversationId) return;
+
+    if (isGuest) {
+      if (!canImage()) {
+        toast.error(`今日圖像額度已用完（${quota.imageLimit} 次）`);
+        return;
+      }
+      const consumed = consumeImage();
+      if (!consumed.ok) {
+        toast.error(consumed.message ?? "圖像額度不足");
+        return;
+      }
+    }
 
     setIsLoading(true);
     try {

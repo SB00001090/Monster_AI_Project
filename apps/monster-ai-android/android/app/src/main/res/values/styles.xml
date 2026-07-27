@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Neon 殼｜開發者：suckbob｜發行商：Monster_Ai_hk -->
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">#00E5FF</item>
+        <item name="colorPrimaryDark">#0B0F1A</item>
+        <item name="colorAccent">#FF4D9A</item>
+        <item name="android:statusBarColor">#0B0F1A</item>
+        <item name="android:navigationBarColor">#0B0F1A</item>
+        <item name="android:windowBackground">#0B0F1A</item>
+    </style>
+    <style name="AppTheme.NoActionBarLaunch" parent="AppTheme">
+        <item name="android:windowFullscreen">false</item>
+    </style>
+</resources>

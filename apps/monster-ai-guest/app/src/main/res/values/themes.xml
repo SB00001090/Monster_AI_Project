@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 開發者：Suckbob | 發行商：Monster_Ai_hk -->
+<resources>
+    <style name="Theme.MonsterAiGuest" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/neon_cyan</item>
+        <item name="colorPrimaryVariant">@color/neon_purple</item>
+        <item name="colorSecondary">@color/neon_pink</item>
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+    </style>
+
+    <style name="Widget.Monster.Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/neon_cyan</item>
+        <item name="android:textColor">@color/bg_dark</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Widget.Monster.Button.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/neon_pink</item>
+        <item name="android:textColor">@color/neon_pink</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>

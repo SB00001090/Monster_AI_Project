@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 舊版 API 回退圖示｜開發者：Suckbob｜發行商：Monster_Ai_hk -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ic_launcher_background" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_launcher_foreground"
+        android:gravity="center" />
+</layer-list>

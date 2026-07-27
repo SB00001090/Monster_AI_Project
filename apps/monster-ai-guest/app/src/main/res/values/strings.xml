@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 開發者：Suckbob | 發行商：Monster_Ai_hk -->
+<resources>
+    <string name="app_name">Monster AI 訪客試玩版</string>
+    <string name="guest_banner">免費試玩中，完整版請下載正式版</string>
+    <string name="timer_remaining">剩餘試玩 %1$s</string>
+    <string name="select_character">選擇試玩角色（僅 3 名公開角色）</string>
+    <string name="locked_section">其他角色已鎖定</string>
+    <string name="intimacy_label">親密度 %1$d</string>
+    <string name="intimacy_up">%1$s 親密度提升至 %2$d</string>
+    <string name="start_chat">開始對話</string>
+    <string name="send">送出</string>
+    <string name="input_hint">輸入訊息（訪客不儲存紀錄）…</string>
+    <string name="chat_title">%1$s %2$s</string>
+    <string name="back">返回</string>
+    <string name="download_official">下載正式版</string>
+    <string name="back_home">回主畫面</string>
+    <string name="trial_ended_title">今日試玩時間已用完</string>
+    <string name="trial_ended_body">訪客每日僅 30 分鐘試玩。\n聊天紀錄不會儲存、無法匯出或自訂角色。\n\n請下載正式版解鎖完整功能。\n發行商：%1$s｜開發者：%2$s</string>
+    <string name="trial_expired_toast">試玩時間已結束，請下載正式版</string>
+    <string name="character_locked">此角色未解鎖（訪客僅限 3 名公開角色）</string>
+    <string name="open_url_failed">無法開啟下載連結</string>
+    <string name="leave_chat_title">離開對話？</string>
+    <string name="leave_chat_message">訪客版不會儲存聊天紀錄，離開後訊息將消失。</string>
+    <string name="leave">離開</string>
+    <string name="cancel">取消</string>
+    <string name="meta_line">開發者：%1$s｜發行商：%2$s｜v%3$s</string>
+    <string name="no_billing">訪客版無付費功能</string>
+    <string name="no_account">訪客版無帳號登入</string>
+    <string name="official_cta">取得完整版</string>
+</resources>

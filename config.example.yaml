@@ -3,6 +3,59 @@ host: "127.0.0.1"
 port: 7860
 log_level: "info"
 
+# ── 加速開發包（Monster_Ai_hk / suckbob）────────────────
+unlimited_mode: true
+uncensored: true
+
+self_learning_analysis:
+  enabled: true
+  log_emotion_tag: true
+  influence_response: true
+  save_to_training: true
+  data_dir: "./data/learning"
+
+self_healing:
+  enabled: true
+  conversation_timeout_sec: 45
+  max_retries: 3
+  auto_fallback_llm: true
+  watchdog_enabled: true
+  preserve_session_on_restart: true
+  log_dir: "./data/logs"
+
+feedback:
+  enabled: true
+  webhook_url: ""
+
+auto_update:
+  enabled: true
+  check_on_startup: true
+  repo: "SB00001090/Monster_AI_Project"
+
+ui_themes:
+  enabled: true
+  current: "cyber_pcb"
+  allow_custom_rgb: true
+  hidden_unlocked: false
+  available:
+    - cyber_pcb
+    - gothic
+    - japanese
+    - hk_neon
+    - minimal_dark
+    - minimal_light
+    - neon_cyber
+    - blood_gothic
+    - modern_japanese
+    - cha_chaan_teng
+  hidden:
+    - blue_rose_cage
+
+gestures:
+  enabled: true
+  sensitivity: medium
+  left_handed: false
+
 launcher:
   auto_start_comfyui: true
   comfyui_headless: true
@@ -156,15 +209,25 @@ modules:
     enabled: true
     comfyui_url: "http://127.0.0.1:8188"
     training_materials_dir: "C:/MonsterAI/Training generative video"
-    mode: "animatediff"
-    max_frames: 16
-    fps: 8
-    width: 512
-    height: 512
-    steps: 15
+    # auto | sulphur2 | wan22_5b | wan22_remix | wan22_14b | hunyuan15 | animatediff
+    mode: "auto"
+    default_backend: "auto"
+    prefer_uncensored: true
+    vram_gb: 12
+    max_frames: 81
+    fps: 16
+    width: 832
+    height: 480
+    steps: 20
+    cfg: 5.0
     output_format: mp4
     require_ffmpeg: true
     temp_dir: "./data/tmp"
+    max_wait_seconds: 900
+    auto_motion_prompt: true
+    auto_character_lora: true
+    default_nsfw_lora: ""
+    default_nsfw_lora_strength: 0.75
   tts:
     enabled: true
     engine: "piper"

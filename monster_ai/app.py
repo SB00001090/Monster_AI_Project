@@ -32,6 +32,7 @@ from monster_ai import __version__
 from monster_ai.api.guard import router as guard_router
 from monster_ai.api.node_proxy import router as node_proxy_router
 from monster_ai.api.heal import router as heal_router
+from monster_ai.api.accel import router as accel_router
 from monster_ai.api.learning import router as learning_router
 from monster_ai.api.generation import router as generation_router
 from monster_ai.api.history import router as history_router
@@ -447,8 +448,38 @@ def create_app(settings: Settings) -> FastAPI:
         guardian_svc=guardian_svc,
         likeness_scorer=likeness_scorer,
     )
+    from monster_ai.learning.emotion_analyzer import EmotionAnalyzer
+    from monster_ai.core.self_healing import ConversationSelfHealing, SelfHealingSettings
+
+    sla = settings.self_learning_analysis
+    emotion_analyzer = EmotionAnalyzer(
+        data_dir=sla.data_dir,
+        enabled=sla.enabled,
+        log_emotion_tag=sla.log_emotion_tag,
+        influence_response=sla.influence_response,
+        save_to_training=sla.save_to_training,
+    )
+    sh = settings.self_healing
+    conversation_healing = ConversationSelfHealing(
+        SelfHealingSettings(
+            enabled=sh.enabled,
+            conversation_timeout_sec=sh.conversation_timeout_sec,
+            max_retries=sh.max_retries,
+            auto_fallback_llm=sh.auto_fallback_llm,
+            watchdog_enabled=sh.watchdog_enabled,
+            preserve_session_on_restart=sh.preserve_session_on_restart,
+            log_dir=sh.log_dir,
+        ),
+        root=root,
+    )
     roleplay = RoleplayService(
-        settings, repair, image_service=image, history=history, learning=learning
+        settings,
+        repair,
+        image_service=image,
+        history=history,
+        learning=learning,
+        emotion_analyzer=emotion_analyzer,
+        conversation_healing=conversation_healing,
     )
     video = VideoService(
         settings,
@@ -527,6 +558,8 @@ def create_app(settings: Settings) -> FastAPI:
     app.state.watchdog = watchdog
     app.state.self_heal = self_heal
     app.state.learning = learning
+    app.state.emotion_analyzer = emotion_analyzer
+    app.state.conversation_healing = conversation_healing
     app.state.code_repair = code_repair
     app.state.vram_guard = vram_guard
     app.state.gen_progress = gen_progress
@@ -546,6 +579,8 @@ def create_app(settings: Settings) -> FastAPI:
     app.state.dify = DifyBridge(settings.dify)
     app.state.rate_limiter = RateLimiter(settings.protection.rate_limit_per_minute)
     app.state.version = __version__
+    app.state.unlimited_mode = bool(settings.unlimited_mode)
+    app.state.uncensored = bool(settings.uncensored)
 
     app.include_router(http_router)
     app.include_router(generation_router)
@@ -553,6 +588,7 @@ def create_app(settings: Settings) -> FastAPI:
     app.include_router(security_router)
     app.include_router(guard_router)
     app.include_router(heal_router)
+    app.include_router(accel_router)
     app.include_router(learning_router)
     app.include_router(mini_router)
     app.include_router(ecosystem_router)

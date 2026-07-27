@@ -1,0 +1,17 @@
+# Monster AI 訪客試玩版
+# 開發者：Suckbob | 發行商：Monster_Ai_hk
+/.gradle/
+/build/
+/app/build/
+/local.properties
+/keystore.properties
+/keystore/*.jks
+/keystore/*.keystore
+*.apk
+*.aab
+*.iml
+.idea/
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/

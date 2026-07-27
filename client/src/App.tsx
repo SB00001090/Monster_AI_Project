@@ -38,11 +38,15 @@ import { AgeVerification } from "./components/AgeVerification";
 import { Redirect, Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { GuestProvider } from "./contexts/GuestContext";
+import { GuestProvider, shouldAutoEnterGuest } from "./contexts/GuestContext";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./_core/hooks/useAuth";
 import { useGuest } from "./contexts/GuestContext";
 import { usePushNotifications } from "./hooks/usePushNotifications";
+import PublicBetaChrome from "./components/PublicBetaChrome";
+import AccelShell from "./components/AccelShell";
+import { UiThemeProvider } from "./contexts/UiThemeContext";
+import { GestureProvider } from "./contexts/GestureContext";
 
 function Router() {
   const [isMobile, setIsMobile] = useState(false);
@@ -67,13 +71,10 @@ function Router() {
     return () => window.clearTimeout(t);
   }, [authLoading]);
 
-  // Local + Cloudflare Pages: default guest when auth is unavailable or unset
+  // 公測 APK / Capacitor / 本機 / Pages：auth 不可用時自動訪客（無需登入）
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const host = window.location.hostname;
-    const autoGuestHost =
-      host.includes("pages.dev") || host === "localhost" || host === "127.0.0.1";
-    if (!autoGuestHost) return;
+    if (!shouldAutoEnterGuest()) return;
     if (authLoading && !authTimedOut) return;
     if (!isGuest && !user) setAsGuest();
   }, [isGuest, user, setAsGuest, authLoading, authTimedOut]);
@@ -268,12 +269,18 @@ function App() {
         <ErrorBoundary>
           <GuestProvider>
             <ThemeProvider defaultTheme="dark" switchable>
-              <BackendProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Router />
-                </TooltipProvider>
-              </BackendProvider>
+              <UiThemeProvider>
+                <GestureProvider>
+                  <BackendProvider>
+                    <TooltipProvider>
+                      <Toaster />
+                      <PublicBetaChrome />
+                      <AccelShell />
+                      <Router />
+                    </TooltipProvider>
+                  </BackendProvider>
+                </GestureProvider>
+              </UiThemeProvider>
             </ThemeProvider>
           </GuestProvider>
         </ErrorBoundary>
@@ -286,17 +293,23 @@ function App() {
       <ErrorBoundary>
         <GuestProvider>
           <ThemeProvider defaultTheme="dark" switchable>
-            <BackendProvider>
-              <TooltipProvider>
-                {showLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
-                {!showLoading && (
-                  <>
-                    <Toaster />
-                    <Router />
-                  </>
-                )}
-              </TooltipProvider>
-            </BackendProvider>
+            <UiThemeProvider>
+              <GestureProvider>
+                <BackendProvider>
+                  <TooltipProvider>
+                    {showLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
+                    {!showLoading && (
+                      <>
+                        <Toaster />
+                        <PublicBetaChrome />
+                        <AccelShell />
+                        <Router />
+                      </>
+                    )}
+                  </TooltipProvider>
+                </BackendProvider>
+              </GestureProvider>
+            </UiThemeProvider>
           </ThemeProvider>
         </GuestProvider>
       </ErrorBoundary>

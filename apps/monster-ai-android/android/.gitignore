@@ -1,0 +1,13 @@
+/.gradle/
+/build/
+/app/build/
+/local.properties
+/keystore.properties
+/keystore/*.jks
+/keystore/*.keystore
+/capacitor-cordova-android-plugins/
+/app/src/main/assets/public/
+*.apk
+*.aab
+.idea/
+*.iml

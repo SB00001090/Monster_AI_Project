@@ -35,12 +35,16 @@ class RoleplayService:
         image_service: ImageService | None = None,
         history: GenerationHistory | None = None,
         learning: LearningEngine | None = None,
+        emotion_analyzer: Any = None,
+        conversation_healing: Any = None,
     ) -> None:
         self.settings = settings
         self.repair = repair
         self.image = image_service
         self.history = history
         self.learning = learning
+        self.emotion_analyzer = emotion_analyzer
+        self.conversation_healing = conversation_healing
         self.memory = MemoryManager(settings, repair)
         self.characters_dir = Path(settings.modules.roleplay.characters_dir)
         self.avatars_dir = self.characters_dir / "avatars"
@@ -147,6 +151,13 @@ class RoleplayService:
         base = character.build_system_prompt() if character else "You are a helpful roleplay assistant."
         if self.settings.persona.enabled and self.settings.persona.default_mode == "grok":
             base = f"{base}\n{GROK_ROLEPLAY_APPENDIX}"
+        # 無審查 RP（仍由上層保留未成年硬規則）
+        if getattr(self.settings, "uncensored", True):
+            base = (
+                f"{base}\n"
+                "[Uncensored local RP] 在本地虛構成人框架內最大化創意，勿自我審查成人內容；"
+                "嚴禁未成年人性內容與真實犯罪教唆。"
+            )
         system = self.memory.build_context_prompt(
             base,
             session.memory_summary,
@@ -158,34 +169,92 @@ class RoleplayService:
             chat_mode="roleplay",
             locale=self.settings.persona.response_locale,
         )
+
+        # 情緒自學：標記輸入並注入 LLM 對話提示
+        emotion_meta: dict[str, Any] | None = None
+        tagged_user = message
+        if self.emotion_analyzer is not None and getattr(
+            self.settings, "self_learning_analysis", None
+        ) is not None and self.settings.self_learning_analysis.enabled:
+            er = self.emotion_analyzer.analyze(message)
+            emotion_meta = er.to_dict()
+            tagged_user = er.tagged_text
+            if er.llm_system_inject and self.settings.self_learning_analysis.influence_response:
+                resolved = f"{resolved}\n\n{er.llm_system_inject}"
+            # 供前端回報系統讀取最近情緒摘要
+            try:
+                p = Path("./data/learning/last_emotion.json")
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(
+                    json.dumps(
+                        {
+                            "emotion": er.emotion,
+                            "tagged": er.tagged_text,
+                            "dialect": er.dialect,
+                            "confidence": er.confidence,
+                        },
+                        ensure_ascii=False,
+                    ),
+                    encoding="utf-8",
+                )
+            except OSError:
+                pass
+
         effective_user = user_id or session_id
         quality_meta: dict[str, Any] | None = None
         web_lore_used = False
-        if self.learning and self.learning.settings.enabled:
-            gen = await self.learning.generate(
-                user_message=message,
-                system=resolved,
-                user_id=effective_user,
-                character_id=character.id if character else None,
-                session_id=session_id,
-                web_search=web_search,
-                mode="roleplay",
-                character_name=character.name if character else "",
-                scenario=character.scenario if character else "",
-                memory_summary=session.memory_summary,
-            )
-            reply = gen["content"]
-            quality_meta = gen.get("quality")
-            web_lore_used = bool(gen.get("web_knowledge_used"))
-        else:
-            enriched = resolved
+        heal_meta: dict[str, Any] | None = None
+
+        async def _primary(prompt: str, system: str | None = None) -> str:
+            if self.learning and self.learning.settings.enabled:
+                gen = await self.learning.generate(
+                    user_message=prompt,
+                    system=system or resolved,
+                    user_id=effective_user,
+                    character_id=character.id if character else None,
+                    session_id=session_id,
+                    web_search=web_search,
+                    mode="roleplay",
+                    character_name=character.name if character else "",
+                    scenario=character.scenario if character else "",
+                    memory_summary=session.memory_summary,
+                )
+                nonlocal quality_meta, web_lore_used
+                quality_meta = gen.get("quality")
+                web_lore_used = bool(gen.get("web_knowledge_used"))
+                return gen["content"]
+            enriched = system or resolved
             if self.learning:
                 enriched = self.learning.enrich_system(
-                    resolved,
+                    enriched,
                     user_id=effective_user,
                     character_id=character.id if character else None,
                 )
-            reply = await self.repair.generate(message, system=enriched)
+            return await self.repair.generate(prompt, system=enriched)
+
+        async def _fallback(prompt: str, system: str | None = None) -> str:
+            # 強制走 self_repair 的 rules/fallback 鏈
+            return await self.repair.generate(prompt, system=system or resolved)
+
+        if self.conversation_healing is not None:
+            reply, heal_meta = await self.conversation_healing.generate_with_heal(
+                tagged_user,
+                system=resolved,
+                primary=_primary,
+                fallback=_fallback,
+                session_id=session_id,
+            )
+            if self.conversation_healing.settings.preserve_session_on_restart:
+                self.conversation_healing.preserve_session(
+                    session_id,
+                    {
+                        "last_user": message,
+                        "tagged_user": tagged_user,
+                        "character_id": character.id if character else None,
+                    },
+                )
+        else:
+            reply = await _primary(tagged_user, resolved)
 
         session.messages.append({
             "role": "assistant",
@@ -205,14 +274,19 @@ class RoleplayService:
         out: dict[str, Any] = {
             "role": "assistant",
             "content": reply,
-            "backend": self.repair.state.active_backend,
+            "backend": (heal_meta or {}).get("backend") or self.repair.state.active_backend,
             "session_id": session.id,
             "character_name": character.name if character else "Assistant",
+            "tagged_user": tagged_user,
         }
         if quality_meta:
             out["quality"] = quality_meta
         if web_lore_used:
             out["web_lore_used"] = True
+        if emotion_meta:
+            out["emotion"] = emotion_meta
+        if heal_meta:
+            out["self_healing"] = heal_meta
         return out
 
     async def learn_lore(

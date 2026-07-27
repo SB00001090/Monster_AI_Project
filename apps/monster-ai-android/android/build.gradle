@@ -1,0 +1,12 @@
+// Monster AI 公測 — 根建置
+// 開發者：suckbob | 發行商：Monster_Ai_hk
+plugins {
+    id 'com.android.application' version '8.2.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
+}
+
+apply from: "variables.gradle"
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

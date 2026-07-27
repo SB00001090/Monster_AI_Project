@@ -19,7 +19,9 @@
     "electron-build:win": "pnpm build && electron-builder --win",
     "electron-build:mac": "pnpm build && electron-builder --mac",
     "electron-build:linux": "pnpm build && electron-builder --linux",
-    "electron-build:all": "pnpm build && electron-builder -mwl"
+    "electron-build:all": "pnpm build && electron-builder -mwl",
+    "cap:sync": "npx cap sync android",
+    "android:public-beta": "apps\\monster-ai-android\\build-public-beta-apk.bat"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",

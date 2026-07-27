@@ -1,0 +1,4 @@
+# 複製為 local.properties 並填入本機 Android SDK 路徑
+# 開發者：Suckbob | 發行商：Monster_Ai_hk
+# 勿提交 local.properties
+sdk.dir=C\:\\Users\\你的使用者\\AppData\\Local\\Android\\Sdk

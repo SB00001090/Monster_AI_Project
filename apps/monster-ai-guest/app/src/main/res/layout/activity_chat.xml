@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 對話畫面｜開發者：Suckbob｜發行商：Monster_Ai_hk -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- 頂列：返回 / 標題 / 親密度 / 倒數 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_card"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <Button
+                android:id="@+id/btnBack"
+                style="@style/Widget.Monster.Button.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="12dp"
+                android:text="@string/back"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvChatTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="🐕‍🦺 雪兒" />
+
+                <TextView
+                    android:id="@+id/tvChatIntimacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/neon_pink"
+                    android:textSize="12sp"
+                    tools:text="親密度 15" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvChatTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_timer"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="6dp"
+                android:textColor="@color/neon_cyan"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="29:59" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMessages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:padding="12dp"
+            tools:listitem="@layout/item_message_bot" />
+
+        <!-- 輸入列：僅文字，無儲存/匯出 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_card"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <EditText
+                android:id="@+id/etInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input"
+                android:hint="@string/input_hint"
+                android:imeOptions="actionSend"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="4"
+                android:padding="12dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnSend"
+                style="@style/Widget.Monster.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/send" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvWatermark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="72dp"
+        android:alpha="0.55"
+        android:textColor="@color/watermark"
+        android:textSize="11sp"
+        tools:text="訪客試玩版｜Monster_Ai_hk" />
+</FrameLayout>

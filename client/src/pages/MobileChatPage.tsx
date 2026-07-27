@@ -49,7 +49,7 @@ export default function MobileChatPage({
   onSwitchToImage,
 }: MobileChatPageProps) {
   const { user, loading: authLoading } = useAuth();
-  const { isGuest } = useGuest();
+  const { isGuest, consumeRp, canRp, quota } = useGuest();
   const canUse = Boolean(user) || isGuest;
   const [currentConversationId, setCurrentConversationId] = useState<
     number | null
@@ -247,6 +247,18 @@ export default function MobileChatPage({
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || !currentConversationId) return;
+
+    if (isGuest) {
+      if (!canRp()) {
+        toast.error(`今日 RP 額度已用完（${quota.rpLimit} 次）`);
+        return;
+      }
+      const consumed = consumeRp();
+      if (!consumed.ok) {
+        toast.error(consumed.message ?? "RP 額度不足");
+        return;
+      }
+    }
 
     const userMessage = inputValue;
     setInputValue("");

@@ -35,6 +35,7 @@ import { useTranslation } from "react-i18next";
 import { useTTS } from "@/hooks/useTTS";
 import { APP_LOGO_SRC, APP_NAME } from "@/const";
 import SignInPrompt from "@/components/SignInPrompt";
+import MessageLongPress from "@/components/gestures/MessageLongPress";
 
 
 interface Message {
@@ -70,7 +71,7 @@ const LAST_CONV_KEY = "monster_last_character_chat";
 export default function ChatPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { isGuest } = useGuest();
+  const { isGuest, consumeRp, canRp, quota } = useGuest();
   const canChat = Boolean(user) || isGuest;
   const [, navigate] = useLocation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -156,6 +157,18 @@ export default function ChatPage() {
 
   const sendToConversation = useCallback(
     async (convId: number, text: string, characterId?: number | null) => {
+      // 公測訪客：每日 RP 額度
+      if (isGuest) {
+        if (!canRp()) {
+          toast.error(`今日 RP 額度已用完（${quota.rpLimit} 次）。請明日再試或升級正式版。`);
+          return;
+        }
+        const consumed = consumeRp();
+        if (!consumed.ok) {
+          toast.error(consumed.message ?? "RP 額度不足");
+          return;
+        }
+      }
       setIsLoading(true);
       try {
         setMessages((prev) => [
@@ -189,7 +202,7 @@ export default function ChatPage() {
         setIsLoading(false);
       }
     },
-    [conversationsQuery, sendMessageMutation, t]
+    [conversationsQuery, sendMessageMutation, t, isGuest, canRp, consumeRp, quota.rpLimit]
   );
 
   const startGeneralChat = useCallback(
@@ -501,48 +514,57 @@ export default function ChatPage() {
             key={msg.id}
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
-            <div
-              className={`max-w-2xl p-4 rounded-2xl ${
-                msg.role === "user"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card border border-border/50"
-              }`}
+            <MessageLongPress
+              text={msg.content}
+              onRegenerate={() => {
+                if (msg.role === "user" && conversationId) {
+                  void sendToConversation(conversationId, msg.content, selectedCharacterId);
+                }
+              }}
             >
-              <div className="flex gap-3 items-start">
-                {msg.role === "assistant" && selectedCharacter && (
-                  <CharacterAvatar
-                    name={selectedCharacter.name}
-                    avatarUrl={selectedCharacter.avatarUrl}
-                    size="sm"
-                  />
-                )}
-                <div className="flex-1 min-w-0">
-                  <Streamdown>{msg.content}</Streamdown>
+              <div
+                className={`max-w-2xl p-4 rounded-2xl ${
+                  msg.role === "user"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border border-border/50"
+                }`}
+              >
+                <div className="flex gap-3 items-start">
+                  {msg.role === "assistant" && selectedCharacter && (
+                    <CharacterAvatar
+                      name={selectedCharacter.name}
+                      avatarUrl={selectedCharacter.avatarUrl}
+                      size="sm"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <Streamdown>{msg.content}</Streamdown>
+                  </div>
+                  {msg.role === "assistant" && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (playingMessageId === msg.id) {
+                          stop();
+                          setPlayingMessageId(null);
+                        } else {
+                          speak(msg.content);
+                          setPlayingMessageId(msg.id);
+                        }
+                      }}
+                      className="p-1 hover:bg-muted rounded"
+                    >
+                      {playingMessageId === msg.id && isPlaying ? (
+                        <VolumeX className="w-4 h-4" />
+                      ) : (
+                        <Volume2 className="w-4 h-4" />
+                      )}
+                    </button>
+                  )}
+                  {msg.role === "user" && <User className="w-5 h-5 shrink-0" />}
                 </div>
-                {msg.role === "assistant" && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (playingMessageId === msg.id) {
-                        stop();
-                        setPlayingMessageId(null);
-                      } else {
-                        speak(msg.content);
-                        setPlayingMessageId(msg.id);
-                      }
-                    }}
-                    className="p-1 hover:bg-muted rounded"
-                  >
-                    {playingMessageId === msg.id && isPlaying ? (
-                      <VolumeX className="w-4 h-4" />
-                    ) : (
-                      <Volume2 className="w-4 h-4" />
-                    )}
-                  </button>
-                )}
-                {msg.role === "user" && <User className="w-5 h-5 shrink-0" />}
               </div>
-            </div>
+            </MessageLongPress>
           </div>
         ))}
 

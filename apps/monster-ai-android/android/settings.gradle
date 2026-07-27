@@ -1,0 +1,25 @@
+// Monster AI 公測 — Capacitor Android
+// 開發者：suckbob | 發行商：Monster_Ai_hk
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "MonsterAiPublicBeta"
+include ':app'
+
+// Capacitor 同步後存在則載入（node_modules 路徑）
+def capSettings = new File(settingsDir, 'capacitor.settings.gradle')
+if (capSettings.exists()) {
+    apply from: 'capacitor.settings.gradle'
+}

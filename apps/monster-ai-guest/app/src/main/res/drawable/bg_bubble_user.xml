@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 開發者：Suckbob | 發行商：Monster_Ai_hk -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/bubble_user" />
+    <corners android:radius="14dp" />
+</shape>

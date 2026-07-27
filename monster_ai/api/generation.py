@@ -97,6 +97,26 @@ class VideoRequest(BaseModel):
     fps: int | None = None
     width: int | None = Field(default=None, ge=256, le=2048)
     height: int | None = Field(default=None, ge=256, le=2048)
+    backend: str | None = Field(
+        default=None,
+        description="auto | sulphur2 | wan22_5b | wan22_remix | wan22_14b | hunyuan15 | animatediff",
+    )
+    mode: str = Field(default="t2v", description="t2v | i2v")
+    source_image: str | None = Field(
+        default=None,
+        description="Local path to start frame (I2V), or filename under image outputs",
+    )
+    from_image_url: str | None = Field(
+        default=None,
+        description="Existing MonsterAI image URL e.g. /api/generate/files/images/xxx.png",
+    )
+    negative: str | None = None
+    steps: int | None = Field(default=None, ge=1, le=80)
+    cfg: float | None = Field(default=None, ge=0.0, le=20.0)
+    seed: int | None = None
+    lora: str | None = None
+    lora_strength: float | None = Field(default=None, ge=0.0, le=2.0)
+    enhance_prompt: bool | None = None
 
 
 class TTSRequest(BaseModel):
@@ -184,6 +204,20 @@ async def generate_image_from_chat(body: FromChatRequest, request: Request) -> d
     return await image.generate(prompt)
 
 
+@router.get("/video/backends")
+async def list_video_backends(request: Request) -> dict:
+    video = request.app.state.video
+    health = await video.health()
+    return {
+        "backends": video.list_backends(),
+        "default": request.app.state.settings.modules.video.default_backend,
+        "mode": request.app.state.settings.modules.video.mode,
+        "vram_gb": request.app.state.settings.modules.video.vram_gb,
+        "healthy": health.get("healthy"),
+        "message": health.get("message"),
+    }
+
+
 @router.post("/video")
 async def generate_video(body: VideoRequest, request: Request) -> dict:
     _check_rate(request)
@@ -196,6 +230,17 @@ async def generate_video(body: VideoRequest, request: Request) -> dict:
             fps=body.fps,
             width=body.width,
             height=body.height,
+            backend=body.backend,
+            mode=body.mode,
+            source_image=body.source_image,
+            from_image_url=body.from_image_url,
+            negative=body.negative,
+            steps=body.steps,
+            cfg=body.cfg,
+            seed=body.seed,
+            lora=body.lora,
+            lora_strength=body.lora_strength,
+            enhance_prompt=body.enhance_prompt,
         )
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(502, str(exc)) from exc

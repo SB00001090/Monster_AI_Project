@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Monster AI 訪客試玩版
+  開發者：Suckbob | 發行商：Monster_Ai_hk
+  包名：com.monster_ai_hk.guest
+  版本：1.0.0-guest
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 訪客版必要權限（精簡：無帳號/付費/推播雲端） -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- 舊版儲存（訪客不寫聊天紀錄，僅預留權限宣告；執行時不主動請求寫入） -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <application
+        android:name=".MonsterGuestApp"
+        android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
+        android:roundIcon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MonsterAiGuest"
+        android:usesCleartextTraffic="false"
+        android:networkSecurityConfig="@xml/network_security_config">
+
+        <!-- 主畫面：角色選擇 + 試玩橫幅 + 倒數 -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MonsterAiGuest">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 對話畫面：僅記憶體暫存，不寫檔、不匯出 -->
+        <activity
+            android:name=".ui.ChatActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <!-- 試玩結束：引導下載正式版 -->
+        <activity
+            android:name=".ui.TrialEndedActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- 明確關閉：無 Billing、無帳號、無雲端同步 Service -->
+    </application>
+</manifest>

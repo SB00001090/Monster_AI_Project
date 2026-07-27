@@ -133,6 +133,29 @@ class ComfyUIClient:
                 await asyncio.sleep(poll_interval)
         raise TimeoutError(f"ComfyUI job timed out: {prompt_id}")
 
+    async def wait_for_media(
+        self, prompt_id: str, poll_interval: float = 1.5, max_wait: int = 900
+    ) -> list[dict[str, Any]]:
+        """Wait for images, gifs, or videos from ComfyUI history outputs."""
+        async with httpx.AsyncClient(timeout=15) as client:
+            for _ in range(max_wait):
+                r = await client.get(f"{self.base}/history/{prompt_id}")
+                if r.status_code == 200:
+                    data = r.json()
+                    if prompt_id in data:
+                        outputs = data[prompt_id].get("outputs", {})
+                        media: list[dict[str, Any]] = []
+                        for node_out in outputs.values():
+                            for key in ("images", "gifs", "videos"):
+                                for item in node_out.get(key, []) or []:
+                                    entry = dict(item)
+                                    entry["_kind"] = key
+                                    media.append(entry)
+                        if media:
+                            return media
+                await asyncio.sleep(poll_interval)
+        raise TimeoutError(f"ComfyUI video job timed out: {prompt_id}")
+
     async def download_image(self, image_info: dict[str, Any], dest: Path) -> Path:
         params = {
             "filename": image_info["filename"],
@@ -145,6 +168,10 @@ class ComfyUIClient:
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_bytes(r.content)
             return dest
+
+    async def download_media(self, media_info: dict[str, Any], dest: Path) -> Path:
+        """Download image/gif/video entry from /view (same params as images)."""
+        return await self.download_image(media_info, dest)
 
 
 class ImageService:

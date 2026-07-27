@@ -154,3 +154,7 @@
     box-shadow: none;
   }
 }
+/* Monster AI 加速包：手勢字體縮放 */
+html {
+  font-size: calc(100% * var(--monster-font-scale, 1));
+}

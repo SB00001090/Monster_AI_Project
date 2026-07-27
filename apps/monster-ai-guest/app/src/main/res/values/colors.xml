@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 開發者：Suckbob | 發行商：Monster_Ai_hk — Neon 訪客主題 -->
+<resources>
+    <color name="bg_dark">#0B0F1A</color>
+    <color name="bg_card">#151B2E</color>
+    <color name="bg_input">#1C2438</color>
+    <color name="neon_cyan">#00E5FF</color>
+    <color name="neon_pink">#FF4D9A</color>
+    <color name="neon_purple">#9B6DFF</color>
+    <color name="text_primary">#F2F5FF</color>
+    <color name="text_secondary">#9AA3B8</color>
+    <color name="banner_bg">#33FF4D9A</color>
+    <color name="warning">#FFB020</color>
+    <color name="danger">#FF4D4D</color>
+    <color name="bubble_user">#2A3A6A</color>
+    <color name="bubble_bot">#1E2A44</color>
+    <color name="watermark">#66FFFFFF</color>
+    <color name="ic_launcher_background">#0B0F1A</color>
+</resources>

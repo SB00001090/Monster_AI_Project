@@ -21,13 +21,15 @@ import {
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
 import { useGuest } from "@/contexts/GuestContext";
+import type { LockedModule } from "@/contexts/GuestContext";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users, MessageCircle, Settings, BookOpen, Cpu, Bot, MessageSquare, Cog, Music, Film, TrendingUp, Sparkles, Download, Cloud, Plug, Shield, Globe, Baby, Library, CreditCard } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, MessageCircle, Settings, BookOpen, Cpu, Bot, MessageSquare, Cog, Music, Film, TrendingUp, Sparkles, Download, Cloud, Plug, Shield, Globe, Baby, Library, CreditCard, Lock } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
+import BetaUpgradePrompt from "./BetaUpgradePrompt";
 
 // Menu items with i18n keys - labels will be translated in the component
 const menuItems = [
@@ -70,13 +72,14 @@ export default function DashboardLayout({
     return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
   });
   const { loading, user } = useAuth();
-  const { isGuest } = useGuest();
+  const { isGuest, setAsGuest, badgeLabel, quota } = useGuest();
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
   }, [sidebarWidth]);
 
-  if (loading) {
+  // 公測：auth loading 過久時仍允許訪客殼（避免無限 skeleton）
+  if (loading && !isGuest) {
     return <DashboardLayoutSkeleton />
   }
 
@@ -89,18 +92,30 @@ export default function DashboardLayout({
               Sign in to continue
             </h1>
             <p className="text-sm text-muted-foreground text-center max-w-sm">
-              Sign in, or use guest mode from the login page to explore locally.
+              公測可直接以訪客免費體驗，或登入使用帳號功能。
             </p>
           </div>
+          <Button
+            onClick={() => setAsGuest()}
+            size="lg"
+            className="w-full shadow-lg hover:shadow-xl transition-all"
+          >
+            以訪客免費進入（公測）
+          </Button>
           <Button
             onClick={() => {
               window.location.href = "/login";
             }}
             size="lg"
-            className="w-full shadow-lg hover:shadow-xl transition-all"
+            variant="outline"
+            className="w-full"
           >
             Sign in
           </Button>
+          <p className="text-xs text-muted-foreground text-center">
+            {badgeLabel} · RP {quota.rpRemaining}/{quota.rpLimit} · 圖像{" "}
+            {quota.imageRemaining}/{quota.imageLimit}
+          </p>
         </div>
       </div>
     );
@@ -139,6 +154,15 @@ function DashboardLayoutContent({
   const activeMenuItem = menuItems.find(item => item.path === location);
   const isMobile = useIsMobile();
   const { t } = useTranslation();
+  const {
+    isGuest,
+    isPublicBeta,
+    badgeLabel,
+    quota,
+    isPathLocked,
+    getLockedModule,
+  } = useGuest();
+  const [lockedPrompt, setLockedPrompt] = useState<LockedModule | null>(null);
 
   useEffect(() => {
     if (isCollapsed) {
@@ -194,10 +218,15 @@ function DashboardLayoutContent({
                 <PanelLeft className="h-4 w-4 text-muted-foreground" />
               </button>
               {!isCollapsed ? (
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex flex-col min-w-0">
                   <span className="font-semibold tracking-tight truncate">
                     Navigation
                   </span>
+                  {(isGuest || isPublicBeta) && (
+                    <span className="text-[10px] text-pink-400 truncate">
+                      {badgeLabel} · RP {quota.rpRemaining}/{quota.rpLimit}
+                    </span>
+                  )}
                 </div>
               ) : null}
             </div>
@@ -207,18 +236,32 @@ function DashboardLayoutContent({
             <SidebarMenu className="px-2 py-1">
               {menuItems.map(item => {
                 const isActive = location === item.path;
+                const locked = isPathLocked(item.path);
                 return (
                   <SidebarMenuItem key={item.path}>
                     <SidebarMenuButton
                       isActive={isActive}
-                      onClick={() => setLocation(item.path)}
-                      tooltip={t(item.label)}
-                      className={`h-10 transition-all font-normal`}
+                      onClick={() => {
+                        if (locked) {
+                          setLockedPrompt(getLockedModule(item.path) ?? null);
+                          return;
+                        }
+                        setLocation(item.path);
+                      }}
+                      tooltip={
+                        locked
+                          ? `${t(item.label)}（公測鎖定）`
+                          : t(item.label)
+                      }
+                      className={`h-10 transition-all font-normal ${locked ? "opacity-60" : ""}`}
                     >
                       <item.icon
                         className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
                       />
-                      <span>{t(item.label)}</span>
+                      <span className="flex-1 truncate">{t(item.label)}</span>
+                      {locked ? (
+                        <Lock className="h-3.5 w-3.5 text-pink-400 shrink-0" />
+                      ) : null}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -227,35 +270,55 @@ function DashboardLayoutContent({
           </SidebarContent>
 
           <SidebarFooter className="p-3">
+            {(isGuest || isPublicBeta) && !isCollapsed && (
+              <div className="mb-2 rounded-lg border border-cyan-500/30 bg-cyan-500/5 px-2 py-1.5 text-[10px] text-cyan-200/90">
+                圖像 {quota.imageRemaining}/{quota.imageLimit} · 訪客免費公測
+              </div>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-3 rounded-lg px-1 py-1 hover:bg-accent/50 transition-colors w-full text-left group-data-[collapsible=icon]:justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   <Avatar className="h-9 w-9 border shrink-0">
                     <AvatarFallback className="text-xs font-medium">
-                      {user?.name?.charAt(0).toUpperCase()}
+                      {user?.name?.charAt(0).toUpperCase() || (isGuest ? "G" : "?")}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
                     <p className="text-sm font-medium truncate leading-none">
-                      {user?.name || "-"}
+                      {user?.name || (isGuest ? "訪客（公測）" : "-")}
                     </p>
                     <p className="text-xs text-muted-foreground truncate mt-1.5">
-                      {user?.email || "-"}
+                      {user?.email || (isGuest ? badgeLabel : "-")}
                     </p>
                   </div>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem
-                  onClick={logout}
-                  className="cursor-pointer text-destructive focus:text-destructive"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
-                </DropdownMenuItem>
+                {!isGuest && (
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                )}
+                {isGuest && (
+                  <DropdownMenuItem
+                    onClick={() => setLocation("/login")}
+                    className="cursor-pointer"
+                  >
+                    <span>登入正式帳號</span>
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarFooter>
+          <BetaUpgradePrompt
+            open={Boolean(lockedPrompt)}
+            module={lockedPrompt}
+            onClose={() => setLockedPrompt(null)}
+          />
         </Sidebar>
         <div
           className={`absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-primary/20 transition-colors ${isCollapsed ? "hidden" : ""}`}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 開發者：suckbob | 發行商：Monster_Ai_hk -->
+<resources>
+    <string name="app_name">Monster AI 公測</string>
+    <string name="title_activity_main">Monster AI 公測</string>
+    <string name="package_name">com.monster_ai_hk.monsterai</string>
+    <string name="custom_url_scheme">com.monster_ai_hk.monsterai</string>
+    <string name="beta_badge">公測版 · 訪客免費</string>
+    <string name="publisher">Monster_Ai_hk</string>
+    <string name="developer">suckbob</string>
+</resources>
