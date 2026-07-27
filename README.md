@@ -2,6 +2,8 @@
 
 **Developed by Suckbob | Guardian Ai · Publisher: Monster_Ai_hk**
 
+> **感謝 xAI GROK 協助開發（開發者自行付費）**
+
 > **【重要公告 2026-07-28】**  
 > **Web 版正式宣佈延期。** 目前優先開發並推出 **Monster AI APK 訪客免費公測版**。  
 > APK 下載連結稍後提供（簽名版 · Monster_Ai_hk）。  
@@ -117,7 +119,6 @@ run.bat                          # 完整一鍵（含 ComfyUI 流）
 | `GET /api/guardian/disclaimer` | 硬編碼免責聲明（幼兒提醒、無法退款、不可關閉） |
 | `GET /api/guardian/status` | 平台健康狀態（`no_tailscale`、`no_qr_code`） |
 | `POST /api/guardian/sync/upload` | E2E 加密 OC/聊天/訓練上傳 |
-| `POST /api/guardian/sync/download` | 跨裝置還原 |
 | `POST /api/guardian/errors/report` | 自動錯誤回報 + 修復建議 |
 | `POST /api/guardian/backstory/generate` | 增強 OC 背景故事（指紋閘門 + 多模態） |
 | `POST /api/guardian/oc/protect` | OC 指紋 + `MGA-` 浮水印 |
